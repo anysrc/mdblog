@@ -1,8 +1,10 @@
-Dieses Repository dient aktuell nur als Bugtracker.
+Der Sourcecode vom [Markdown Blog](http://anysrc.net/).
 
-Der Sourcecode vom [Markdown Blog](http://anysrc.net/) kommt später.
+Fertige Software Pakete unter "releases".
 
 ## Ressourcen
 
 * [PHP Doc](http://git.anysrc.net/mdblog-phpdoc/)
 * [Dokumentation](http://anysrc.net/list/docs)
+
+

@@ -1,0 +1,11 @@
+
+folder:
+   itemsperpage: 10
+   faicon: folder
+   sort:
+      -
+         property: priority
+         direction: desc
+      -
+         property: postdate
+         direction: desc
