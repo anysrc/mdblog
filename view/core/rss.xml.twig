@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+   <atom:link href="{{app.request.uri}}" rel="self" type="application/rss+xml" />
+   <title>{{'site/title'|gcfg|default('mdblog')}} RSS</title>
+   <description>{{'site/subtitle'|gcfg|default('anysrc markdown blog')}}</description>
+   <link>{{url('root')}}</link>
+   <lastBuildDate>{{'now'|date('r')}} </lastBuildDate>
+   <pubDate>{{ pubDate }} </pubDate>
+   <ttl>86400</ttl>
+
+{% for post in collection.toArray %}
+   <item>
+      <title>{{ post.title }}</title>
+      <description>{{post.templaterawintro|parsedown|escape }}</description>
+      <link>{{ post.hashurl }}</link>
+      <guid>{{ post.hashurl }}</guid>
+      <pubDate>{{ post.postdate|date('r') }} </pubDate>
+   </item>
+{% endfor %}
+
+</channel>
+</rss>

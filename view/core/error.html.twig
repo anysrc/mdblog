@@ -1,0 +1,40 @@
+{% extends "@core/html.html.twig" %}
+
+{% block head %}
+   <title>Error {{code}}  - AnySrc Markdown Blog</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container" style="padding-top:20px;">
+        <div class="row">
+
+            <div class="col-md-10 col-md-offset-1">
+
+               <div class="panel panel-default">
+                  <div class="panel-heading">Error {{code}}</div>
+                  <div class="panel-body result">
+
+                     <p>{{exception.message}}</p>
+
+                     {% if debug %}
+                     <h3>Exception</h3>
+                     <p>\{{type}}</p>
+                     <h3>Stacktrace</h3>
+                     <pre>{{exception.traceasstring}}</pre>
+                     {% endif %}
+
+                  </div>
+                  <div class="panel-footer clearfix">
+                     <div class="pull-right">
+                        <a href="/" class="btn btn-primary">Zur Startseite</a>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

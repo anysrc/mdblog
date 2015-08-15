@@ -1,0 +1,9 @@
+config/*.yml
+content/*.twig
+post/*.md
+post/*.yml
+post/*/
+upload/
+composer.lock
+vendor/
+nbproject/private

@@ -1,0 +1,35 @@
+
+twittermeta:
+   enabled: true
+   nickname: perryf1ynn
+
+footericonlinks:
+   -
+      icon: twitter
+      url: https://twitter.com/perryf1ynn
+      title: Twitter
+      newwindow: true
+   -
+      icon: github
+      url: https://github.com/perryflynn
+      title: Github
+      newwindow: true
+   -
+      icon: lightbulb-o
+      url: xmpp:christian@relaychat.eu
+      title: XMPP/Jabber
+      newwindow: true
+   -
+      icon: paper-plane
+      url: mailto:christian@anysrc.net
+      title: E-Mail
+      newwindow: true
+   -
+      icon: rss-square
+      special: route
+      routename: page
+      routeparams:
+         mode: list
+      urlpostfix: ?rss
+      title: RSS Feed
+      newwindow: true

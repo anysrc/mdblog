@@ -1,0 +1,110 @@
+{% extends "@view/index.html.twig" %}
+
+{% block head %}
+   <title>{{app.gcfg.getPath('site/title', 'Blog')}}</title>
+   <meta name="robots" content="noindex,follow">
+   {{parent()}}
+{% endblock %}
+
+{% block content %}
+
+   {% if showquerydocs or pages.count<1 %}
+      <h3>Wie die Suche funktioniert</h3>
+      <table class="table table-hover table-condensed" style="margin-bottom:40px;">
+         <thead>
+            <tr>
+               <th>Beispiel</th>
+               <th>Erklärung</th>
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td>einige suchbegriffe</td>
+               <td>Durchsucht den Titel und den Inhalt einzeln nach <code>einige</code> und <code>suchbegriffe</code></td>
+            </tr>
+            <tr>
+               <td>title:"einige suchbegriffe"</td>
+               <td>Durchsucht den Titel einzeln nach <code>einige</code> und <code>suchbegriffe</code></td>
+            </tr>
+            <tr>
+               <td>content:"einige suchbegriffe"</td>
+               <td>Durchsucht den Inhalt einzeln nach <code>einige</code> und <code>suchbegriffe</code></td>
+            </tr>
+            <tr>
+               <td>folder:gnu-linux</td>
+               <td>Durchsucht nur Beiträge im Ordner <code>~/gnu-linux</code></td>
+            </tr>
+            <tr>
+               <td>tag:smartphone</td>
+               <td>Durchsucht nur Beiträge mit dem Tag <code>smartphone</code></td>
+            </tr>
+            <tr>
+               <td>folder:gnu-linux tag:smartphone tag:"ebook reader" content:tastatur</td>
+               <td>Durchsucht den Inhalt der Beiträge in <code>~/gnu-linux</code> welche die Tags <code>smartphone</code> und <code>ebook reader</code> besitzen nach <code>tastatur</code></td>
+            </tr>
+         </tbody>
+      </table>
+   {% endif %}
+
+   {% for page in pages.toArray %}
+
+      <article{% if page.prop('priority', 0) > 0 %} class="well"{% endif %}>
+         {% if page.prop('priority', 0) > 0 %}
+            <div class="text-muted" style="float:right;">
+               <i title="Gepinnter Beitrag" class="fa fa-thumb-tack"></i>
+               Gepinnter Beitrag
+            </div>
+         {% endif %}
+
+         <h2><a href="{{page.url}}">{{page.title}}</a>{% if scoresearch %} <small>Score: {{page.getProp('searchscore')}}</small>{% endif %}</h2>
+
+         <div class="row">
+            <div class="col-md-12">
+               <p><span class="fa fa-clock-o"></span> Beitrag vom {{page.postdate|date('d.m.Y')}}</p>
+            </div>
+         </div>
+
+         {{macro.tagline(page)}}
+
+         <div class="row" style="margin-top:20px;">
+            <div class="col-md-12">
+               {{page.templaterawintro|parsedown}}
+            </div>
+         </div>
+
+         <div style="padding-top:10px; clear:both;">
+            <a class="btn btn-primary" href="{{page.url}}">Weiterlesen <span class="glyphicon glyphicon-chevron-right"></span></a>
+         </div>
+      </article>
+
+      {% if page.prop('priority', 0) <= 0 %}
+         {% if loop.last==false %}<hr>{% endif %}
+      {% endif %}
+
+   {% else %}
+      <div class="row">
+         <div class="col-md-12">
+            Die Suche lieferte ein leeres Ergebnis.
+         </div>
+      </div>
+   {% endfor %}
+
+   {% if prevpage is not null or nextpage is not null %}
+      <hr>
+
+      <ul class="pager">
+         {% if prevpage is not null %}
+         <li class="previous">
+            <a href="{{path('page', {folder:currentfolder, page:prevpage, mode:currentmode})}}"><span class="glyphicon glyphicon-arrow-left"></span> Ältere Beiträge</a>
+         </li>
+         {% endif %}
+         <li>Seite {{currentpage}} von {{lastpage}}</li>
+         {% if nextpage is not null %}
+         <li class="next">
+            <a href="{{path('page', {folder:currentfolder, page:nextpage, mode:currentmode})}}">Neuere Beiträge <span class="glyphicon glyphicon-arrow-right"></span></a>
+         </li>
+         {% endif %}
+      </ul>
+   {% endif %}
+
+{% endblock %}

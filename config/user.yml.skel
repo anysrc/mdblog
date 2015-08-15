@@ -1,0 +1,30 @@
+
+infodialog:
+   enabled: true
+   text: Dieser Dialog kann in <code>config/user.yml</code> konfiguriert werden.
+   faicon: info-circle
+
+tags:
+   defaulticon: tag
+   icons:
+      nothing:
+         faicon: trash-o
+         title: Nix
+      silex:
+         faicon: code
+         title: Framework
+      twig:
+         faicon: code
+         title: Template Engine
+      markdown:
+         faicon: language
+         title: Sprache
+      php:
+         faicon: language
+         title: Sprache
+      extjs:
+         faicon: code
+         title: Framework
+      javascript:
+         faicon: language
+         title: Sprache

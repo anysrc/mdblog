@@ -1,0 +1,23 @@
+
+site:
+   template: bootstrapblog
+   title: Unnamed blog
+   subtitle: A unnamed blog
+
+hostconfig:
+   forcehttps: false
+
+fileupload:
+   enabled: true
+   maxfilemb: 64
+   denyfilemask: /\.(php[3-6]?|phpsh|phtml)(\..*)?$|^\.htaccess$/i
+
+debug:
+   enabled: false
+   debughosts:
+      - 127.0.0.1
+      - 192.168.1.1
+
+realtimeeditor:
+   enabled: true
+   interval: 2

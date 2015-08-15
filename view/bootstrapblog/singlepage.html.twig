@@ -1,0 +1,23 @@
+{% extends "@view/index.html.twig" %}
+
+{% block head %}
+   <title>{{page.title}} - {{app.gcfg.getPath('site/title', 'Blog')}}</title>
+   {{parent()}}
+{% endblock %}
+
+{% block scripts %}
+   {{parent()}}
+   {% include "@core/include_realtimeeditor.twig" %}
+{% endblock %}
+
+{% block content %}
+   <h1>{{page.title}}</h1>
+
+   <hr>
+   {{page.templateraw|parsedown}}
+
+   {% if app.loginstatus %}
+      {{macro.infodialog('warning', 'file-o', './cmd.php write ::'~page.hash)}}
+   {% endif %}
+
+{% endblock %}

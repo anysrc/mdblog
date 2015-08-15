@@ -1,0 +1,84 @@
+
+
+{% macro postpath(folder) %}{% spaceless %}
+   {{path('page', {folder:folder.namepath, mode:'list'})}}
+{% endspaceless %}{% endmacro %}
+
+
+{% macro postpathlink(folder) %}{% spaceless %}
+   <a href="{{_self.postpath(folder)}}">~/{{folder.namepath}}</a>
+{% endspaceless %}{% endmacro %}
+
+
+{% macro tag(color, title, url, name, iconclass, specialclass) %}{% spaceless %}
+   <span class="tag tag-{{color}} {{specialclass|default('')}}" title="{{title|default('')}}">
+      <a href="{{url}}">{{name}}</a>
+      <i class="fa fa-{{iconclass}}"></i>
+   </span>
+{% endspaceless %}{% endmacro %}
+
+
+{% macro foldertag(folder) %}{% spaceless %}
+   {% set isprivate = '' %}
+   {% set title = folder.description|default('') %}
+   {% if folder.private|default(false) == true %}
+      {% set isprivate = 'privatefolder' %}
+      {% set title = title ~ ' (Private Kategorie)' %}
+   {% endif %}
+
+   {{_self.tag('green', title, _self.postpath(folder), '~/'~folder.namepath, folder.faicon|default('folder'), isprivate)}}
+{% endspaceless %}{% endmacro %}
+
+
+{% macro tagtag(tag) %}{% spaceless %}
+   {% set tag = tag|merge(('tags/icons/'~tag.name)|gcfg|default({ title:'tag', faicon:'tag' })) %}
+   {% set title = tag.title %}
+   {% if tag.usectnr is defined %}
+      {% set title = title ~ ' - ' ~ tag.usectnr ~ 'x benutzt' %}
+   {% endif %}
+
+   {{_self.tag('orange', title, path('page', {mode:'tag', folder:tag.name}), tag.name|default('untitled tag'), tag.faicon)}}
+{% endspaceless %}{% endmacro %}
+
+
+{% macro statustag(property, title, name, faicon) %}{% spaceless %}
+   {% set link = '#' %}
+   {% if property is not null %}
+      {% set link = path('page', { mode:'status', folder:property }) %}
+   {% endif %}
+   {{_self.tag('white', title, link, name, faicon)}}
+{% endspaceless %}{% endmacro %}
+
+
+{% macro tagline(page) %}
+<div class="row">
+   <div class="col-md-12">
+      <div class="pull-left spacer-5">{{_self.foldertag(page.folderconfig)}}</div>
+      {% for item in page.tags %}
+         <div class="pull-left spacer-5">{{_self.tagtag(item)}}</div>
+      {% endfor %}
+      {% if app.loginstatus %}
+         {% set isprivate = '' %}
+         {% set title = 'ID des Beitrags' %}
+         {% if page.isinprivatefolder == true %}
+            {% set isprivate = 'privatefolder' %}
+            {% set title = title ~ ' (Beitrag in einer privaten Kategorie)' %}
+         {% endif %}
+         <div class="pull-left spacer-5">{{_self.tag('white', title, path('hash', {hash:page.hash}), page.hash, 'barcode', isprivate)}}</div>
+      {% endif %}
+      {% if page.isvalid == false %}
+         <div class="pull-left spacer-5">{{_self.statustag((app.loginstatus ? 'invalid' : null), 'Dieser Beitrag enthält Syntax Fehler', 'Syntax Fehler', 'exclamation-triangle')}}</div>
+      {% endif %}
+      {% if page.isdisabled %}
+         <div class="pull-left spacer-5">{{_self.statustag('disabled', 'Dieser Beitrag ist deaktiviert', 'Deaktiviert', 'lock')}}</div>
+      {% endif %}
+      {% if page.isvisible == false %}
+         <div class="pull-left spacer-5">{{_self.statustag('hidden', 'Dieser Beitrag wird nicht gelistet', 'Unsichtbar', 'eye-slash')}}</div>
+      {% endif %}
+   </div>
+</div>
+{% endmacro %}
+
+{% macro infodialog(type, icon, text) %}
+<div class="alert alert-{{type}}" role="alert"><strong><i class="fa fa-{{icon}}"></i></strong> {{text|raw}}</div>
+{% endmacro %}

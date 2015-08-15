@@ -1,0 +1,12 @@
+
+<script type="text/javascript">
+   if(!Config) { var Config = {}; }
+   Config.currentpagename = '{{page.name}}';
+   Config.currentpageeditdate = {{page.filemodificationtime|date('U')}};
+   Config.jsoninfourl = '{{url('json-info')}}';
+   Config.jsonismodifiedurl = '{{url('json-ismodified')}}';
+   Config.rooturl = '{{url('root')}}';
+</script>
+
+<script src="/view/core/scripts-realtimeeditor.js"></script>
+

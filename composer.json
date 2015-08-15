@@ -1,0 +1,22 @@
+{
+    "repositories": [
+        {
+            "name":"perryflynn/parsedown-extra-extensions",
+            "type": "vcs",
+            "url": "https://github.com/perryflynn/parsedown-extra-extensions.git"
+        }
+    ],
+    "require": {
+        "silex/silex": "~1.2",
+        "twig/twig": "~1.18",
+        "symfony/twig-bridge": "~2.6",
+        "perryflynn/parsedown-extra-extensions": "~0.0",
+        "symfony/yaml": "~2.6",
+        "abeautifulsite/simpleimage": "^2.5"
+    },
+    "autoload": {
+        "psr-0": {
+            "AnySrc": "lib/"
+        }
+    }
+}

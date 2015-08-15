@@ -1,0 +1,6 @@
+
+{% if '@view/error.html.twig'|tplexists %}
+   {% include '@view/error.html.twig' %}
+{% else %}
+   {% include '@core/error.html.twig' %}
+{% endif %}

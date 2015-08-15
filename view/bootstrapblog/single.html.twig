@@ -1,0 +1,54 @@
+{% extends "@view/index.html.twig" %}
+
+{% block head %}
+   <title>{{page.title}} - {{app.gcfg.getPath('site/title', 'Blog')}}</title>
+
+   <meta name="robots" content="index,follow">
+   <meta name="description" content="{{page.templaterawintro|parsedown|striptags|replace({'\n':' '})}}">
+   <meta name="keywords" content="{{page.tagnames|join(', ')}}">
+   <meta property="og:title" content="{{page.title}}">
+   <meta property="og:description" content="{{page.templaterawintro|parsedown|striptags|replace({'\n':' '})}}">
+   <meta property="og:type" content="article">
+   <meta property="og:url" content="{{app.request.uri}}">
+   <meta property="article:section" content="{{page.namefolder}}">
+   <meta property="article:tag" content="{{page.tagnames|join(', ')}}">
+
+   {% if 'twittermeta/enabled'|tplcfg %}
+   <meta name="twitter:card" content="summary">
+   <meta name="twitter:site" content="@{{'twittermeta/nickname'|tplcfg}}">
+   <meta name="twitter:title" content="{{page.title}}">
+   <meta name="twitter:description" content="{{page.templaterawintro|parsedown|striptags|replace({'\n':' '})}}">
+   {#<meta name="twitter:image" content="https://farm6.staticflickr.com/5510/14338202952_93595258ff_z.jpg">#}
+   {% endif %}
+
+   {{parent()}}
+{% endblock %}
+
+{% block scripts %}
+   {{parent()}}
+   {% include "@core/include_realtimeeditor.twig" %}
+{% endblock %}
+
+{% block content %}
+   <article>
+   <h1>{{page.title}}</h1>
+
+   <div class="row">
+      <div class="col-md-12">
+         <span class="fa fa-clock-o"></span> Beitrag vom {{page.postdate|date('d.m.Y')}}
+      </div>
+   </div>
+
+   {{macro.tagline(page)}}
+
+   <hr>
+   {{page.templateraw|parsedown}}
+
+   </article>
+   {% if app.loginstatus %}
+      <div style="clear:both; padding-top:20px;">
+      {{macro.infodialog('warning', 'file-o', './cmd.php write ::'~page.hash)}}
+      </div>
+   {% endif %}
+
+{% endblock %}

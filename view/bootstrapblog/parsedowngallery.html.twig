@@ -1,0 +1,18 @@
+
+<div class="parsedowngallery panel panel-default">
+   <div class="panel-body">
+      <div class="row parsedowngalleryscroll">
+         {% for file in files %}
+            <div class="col-sm-2">
+               <a href="{{file.original}}" target="_blank" data-gallery title="{{file.basename}}">
+                 <img class="img-responsive img-thumbnail" src="{{file.thumbnail}}" alt="Thumbnail">
+               </a>
+            </div>
+         {% else %}
+            <div class="col-sm-12">
+               <p>No files found.</p>
+            </div>
+         {% endfor %}
+      </div>
+   </div>
+</div>

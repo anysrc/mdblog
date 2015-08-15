@@ -1,0 +1,14 @@
+
+{% if '@view/parsedowngallery.html.twig'|tplexists %}
+   {% include '@view/parsedowngallery.html.twig' %}
+{% else %}
+
+   <ul class="parsedowngallery">
+      {% for file in files %}
+         <li><a href="{{file.original}}" target="_blank"><img src="{{file.thumbnail}}" alt="Thumbnail"></a></li>
+      {% else %}
+         <li>No files found</li>
+      {% endfor %}
+   </ul>
+
+{% endif %}
