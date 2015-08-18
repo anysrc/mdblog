@@ -219,10 +219,12 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
    }
 
    $query = trim($query);
+   $queryparser = new \AnySrc\SearchPropertyParser($query);
+   $ignorehiddeninparent = count($queryparser->getByProperty('folder'))<1 && !empty($query);
 
    //--> Do search
    $search = new \AnySrc\MarkdownBlog\PageSearch($filteredcollection);
-   $filteredcollection = $search->search($query, 2, false);
+   $filteredcollection = $search->search($queryparser, 2, $ignorehiddeninparent);
    $patternsearch = $search->getContainscontents() || $search->getContainstitles() || $search->getContainspatterns();
 
    //--> Abort if result is empty
@@ -246,9 +248,17 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
    else
    {
 
-      // Sort
       $foldercfg = $filteredcollection->getFolderConfig($filteredcollection->getBaseFolder().$folder);
-      $filteredcollection->sort($foldercfg['folder']['sort']);
+
+      // Sort
+      if($patternsearch===true)
+      {
+         $filteredcollection->sort(array(array('property'=>'searchscore', 'direction'=>'ASC')));
+      }
+      else
+      {
+         $filteredcollection->sort($foldercfg['folder']['sort']);
+      }
 
       // Paging
       $itemsperpage = 5;

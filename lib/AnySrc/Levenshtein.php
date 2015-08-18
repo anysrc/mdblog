@@ -16,9 +16,11 @@ class Levenshtein
     * Compare a text with multiple patterns and return the avg score
     * @param string $text
     * @param array $patterns
+    * @param int $smallword
+    * @param int $smalladdition
     * @return float
     */
-   public static function compareText($text, array $patterns)
+   public static function compareText($text, array $patterns, $smallword=3, $smalladdition=2)
    {
       if(count($patterns)<1)
       {
@@ -53,7 +55,19 @@ class Levenshtein
                $worditem=substr($worditem, 0, self::MAXLENGTH);
             }
 
-            $temp = levenshtein($patternitem, $worditem);
+            if(($worditem==$patternitem) || (strlen($patternitem)>$smallword && strpos($worditem, $patternitem)!==false))
+            {
+               $temp=0;
+            }
+            else
+            {
+               $temp = levenshtein($patternitem, $worditem);
+               if($smallword>0 && strlen($patternitem)<=$smallword)
+               {
+                  $temp += $smalladdition;
+               }
+            }
+
             if($temp<$results[$patternitem])
             {
                $results[$patternitem] = $temp;
@@ -80,14 +94,16 @@ class Levenshtein
     * )
     *
     * @param array $comparisons
+    * @param int $smallword
+    * @param int $smalladdition
     * @return float
     */
-   public static function compareTextMultiple(array $comparisons)
+   public static function compareTextMultiple(array $comparisons, $smallword=3, $smalladdition=2)
    {
       $results = array();
       foreach($comparisons as $cmp)
       {
-         $temp = self::compareText($cmp['text'], $cmp['patterns']);
+         $temp = self::compareText($cmp['text'], $cmp['patterns'], $smallword, $smalladdition);
          if($temp!==null)
          {
             $results[] = $temp;

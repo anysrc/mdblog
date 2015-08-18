@@ -1,9 +1,11 @@
-config/*.yml
-content/*.twig
-post/*.md
-post/*.yml
-post/*/
-upload/
+config/*
+!config/*.skel
+content/*
+!content/*.skel
+post/*
+!post/*.skel
+upload/*
+!upload/readme.txt
 composer.lock
 vendor/
 nbproject/private

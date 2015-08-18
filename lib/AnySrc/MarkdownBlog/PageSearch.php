@@ -61,18 +61,17 @@ class PageSearch
     * @param bool $ignorehiddeninparent
     * @return \AnySrc\MarkdownBlog\PageCollection
     */
-   public function search($q, $maximumscore=2, $ignorehiddeninparent=true)
+   public function search(\AnySrc\SearchPropertyParser $q, $maximumscore=2, $ignorehiddeninparent=true)
    {
       $filteredcollection = $this->collection->cloneCollection();
 
       //--> Parse query
-      $parser = new \AnySrc\SearchPropertyParser($q);
-      $tags = $parser->getByProperty('tag');
-      $titles = $parser->getByProperty('title');
-      $contents = $parser->getByProperty('content');
-      $folders = $parser->getByProperty('folder');
-      $patterns = $parser->getByProperty(null);
-      $states = $parser->getByProperty('state');
+      $tags = $q->getByProperty('tag');
+      $titles = $q->getByProperty('title');
+      $contents = $q->getByProperty('content');
+      $folders = $q->getByProperty('folder');
+      $patterns = $q->getByProperty(null);
+      $states = $q->getByProperty('state');
 
       $this->containspatterns = count($patterns)>0;
       $this->containstitles = count($titles)>0;
@@ -88,6 +87,28 @@ class PageSearch
           'disabled' => array('isdisabled', true),
           'enabled' => array('isdisabled', false),
       );
+
+      //--> Pages by folder
+      if(count($folders)>0)
+      {
+         $temp = null;
+         foreach($folders as $folder)
+         {
+            if($temp===null)
+            {
+               $temp = $filteredcollection->getFolderPages($folder, $ignorehiddeninparent);
+            }
+            else
+            {
+               $temp->importPages($filteredcollection->getFolderPages($folder, $ignorehiddeninparent)->toArray());
+            }
+         }
+         $filteredcollection = $temp;
+      }
+      else
+      {
+         $filteredcollection = $filteredcollection->getFolderPages(null, $ignorehiddeninparent);
+      }
 
       //--> Pages by state
       if(count($states)>0)
@@ -107,24 +128,6 @@ class PageSearch
             else
             {
                $temp->importPages($filteredcollection->getPagesByProperty($stateprops[$state][0], $stateprops[$state][1])->toArray());
-            }
-         }
-         $filteredcollection = $temp;
-      }
-
-      //--> Pages by folder
-      if(count($folders)>0)
-      {
-         $temp = null;
-         foreach($folders as $folder)
-         {
-            if($temp===null)
-            {
-               $temp = $filteredcollection->getFolderPages($folder, $ignorehiddeninparent);
-            }
-            else
-            {
-               $temp->importPages($filteredcollection->getFolderPages($folder, $ignorehiddeninparent)->toArray());
             }
          }
          $filteredcollection = $temp;

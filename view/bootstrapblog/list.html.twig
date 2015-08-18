@@ -46,6 +46,12 @@
       </table>
    {% endif %}
 
+   {% if scoresearch and pages.count>0 %}
+      <div class="alert alert-success">
+         Die Suche nach <strong>{{query}}</strong> ergab {{pages.count}} Treffer.
+      </div>
+   {% endif %}
+
    {% for page in pages.toArray %}
 
       <article{% if page.prop('priority', 0) > 0 %} class="well"{% endif %}>
