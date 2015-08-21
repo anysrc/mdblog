@@ -55,9 +55,17 @@ class Levenshtein
                $worditem=substr($worditem, 0, self::MAXLENGTH);
             }
 
-            if(($worditem==$patternitem) || (strlen($patternitem)>$smallword && strpos($worditem, $patternitem)!==false))
+            if($worditem==$patternitem)
             {
                $temp=0;
+            }
+            elseif(strpos($worditem, $patternitem)!==false)
+            {
+               $temp=1;
+               if(strlen($patternitem)<=$smallword)
+               {
+                  $temp+=1;
+               }
             }
             else
             {

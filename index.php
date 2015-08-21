@@ -286,7 +286,7 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
           "currentfolder" => $folder,
           "currentmode" => $mode,
           "lastpage" => $max,
-          "query" => $query,
+          "query" => (empty($query) ? null : $query),
           "showquerydocs" => ($request->get('q')!==null && empty($query)),
           "scoresearch" => $patternsearch,
       ));

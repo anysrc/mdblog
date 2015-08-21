@@ -8,7 +8,7 @@
 
 {% block content %}
 
-   {% if showquerydocs or pages.count<1 %}
+   {% if showquerydocs or filteredcollection.count<1 %}
       <h3>Wie die Suche funktioniert</h3>
       <table class="table table-hover table-condensed" style="margin-bottom:40px;">
          <thead>
@@ -46,9 +46,9 @@
       </table>
    {% endif %}
 
-   {% if scoresearch and pages.count>0 %}
+   {% if scoresearch and filteredcollection.count>0 %}
       <div class="alert alert-success">
-         Die Suche nach <strong>{{query}}</strong> ergab {{pages.count}} Treffer.
+         Die Suche nach <strong>{{query}}</strong> ergab {{filteredcollection.count}} Treffer.
       </div>
    {% endif %}
 
@@ -101,13 +101,13 @@
       <ul class="pager">
          {% if prevpage is not null %}
          <li class="previous">
-            <a href="{{path('page', {folder:currentfolder, page:prevpage, mode:currentmode})}}"><span class="glyphicon glyphicon-arrow-left"></span> Ältere Beiträge</a>
+            <a href="{{path('page', {folder:currentfolder, page:prevpage, q:query, mode:currentmode})}}"><span class="glyphicon glyphicon-arrow-left"></span> Ältere Beiträge</a>
          </li>
          {% endif %}
          <li>Seite {{currentpage}} von {{lastpage}}</li>
          {% if nextpage is not null %}
          <li class="next">
-            <a href="{{path('page', {folder:currentfolder, page:nextpage, mode:currentmode})}}">Neuere Beiträge <span class="glyphicon glyphicon-arrow-right"></span></a>
+            <a href="{{path('page', {folder:currentfolder, page:nextpage, q:query, mode:currentmode})}}">Neuere Beiträge <span class="glyphicon glyphicon-arrow-right"></span></a>
          </li>
          {% endif %}
       </ul>
