@@ -1,12 +1,10 @@
 <?php
 
 namespace AnySrc\Security;
-use Symfony\Component\Yaml\Yaml;
 
-class Tan
+class Tan extends \AnySrc\YamlFile
 {
 
-   private $file;
 
    public function __construct($file)
    {
@@ -61,32 +59,6 @@ class Tan
           "tans" => array(),
           "sessions" => array(),
       );
-   }
-
-
-   /**
-    * Load YML config
-    * @return array
-    */
-   public function load()
-   {
-      $data = self::getSkeleton();
-      if(is_file($this->file))
-      {
-         $data = Yaml::parse(file_get_contents($this->file));
-      }
-      return $data;
-   }
-
-
-   /**
-    * Save to YAML file
-    * @param array $data
-    */
-   public function save(array $data)
-   {
-      $yml = Yaml::dump($data, 99, 3);
-      file_put_contents($this->file, $yml);
    }
 
 
@@ -313,8 +285,8 @@ class Tan
          $this->save($data);
       }
    }
-   
-   
+
+
    /**
     * Get all sessions
     * @return array
@@ -324,8 +296,8 @@ class Tan
       $data = $this->load();
       return $data['sessions'];
    }
-   
-   
+
+
    /**
     * Get all tans
     * @return array

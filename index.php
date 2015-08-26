@@ -173,6 +173,14 @@ if($app['loginstatus']===false)
       ->getPagesByFolderConfigProperty('private', false);
 }
 
+//--> Pagedata for templates
+$app['allcollection'] = $collection;
+$app['listcollection'] = $collection->cloneCollection();
+if($app['loginstatus']!==true)
+{
+   $app['listcollection'] = $collection->getPagesByProperty("isvisible", true);
+}
+
 
 
 
@@ -189,7 +197,7 @@ $app->get('/', function() use($app)
 
 
 
-$app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($app, $collection)
+$app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($app, $collection, $parsedown)
 {
    // Hide invisible pages
    $filteredcollection = $collection;
@@ -197,8 +205,6 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
    {
       $filteredcollection = $filteredcollection->getPagesByProperty("isvisible", true);
    }
-
-   $listcollection = $filteredcollection;
 
    //--> Build query string
    $query = $request->get('q', '');
@@ -239,9 +245,21 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
       $filteredcollection->sortDesc('postdate');
       $pubdate = $filteredcollection->getFirstPage()->getPostDate()->format('r');
 
+      $items = array();
+      foreach($filteredcollection->toArray() as $item)
+      {
+         $items[] = array(
+             'title' => $item->getTitle(),
+             'description' => $parsedown->text($item->getTemplateRawIntro()),
+             'link' => $item->getHashUrl(),
+             'guid' => $item->getHashUrl(),
+             'pubdate' => $item->getPostDate()->format('r'),
+         );
+      }
+
       return $app->render('@core/rss.xml.twig', array(
-          'pubDate' => $pubdate,
-          'collection' => $filteredcollection,
+          'pubdate' => $pubdate,
+          'items' => $items,
       ));
 
    }
@@ -276,8 +294,6 @@ $app->get('/{mode}/{folder}', function(Request $request, $mode, $folder) use($ap
 
       // Render template
       return $app->render($foldercfg['folder']['template']['list'], array(
-          "allcollection" => $collection,
-          "listcollection" => $listcollection,
           "filteredcollection" => $filteredcollection,
           "pages" => $items,
           "prevpage" => ($page>$min ? ($page-1) : null),
@@ -488,6 +504,16 @@ $app->get('/json/ismodified', function(Request $request) use($app, $collection)
    return $app->json(array("success"=>true, "result"=>$result));
 })
 ->bind('json-ismodified');
+
+
+
+//--> Plugin system
+if($app['gcfg']->getPath('pluginsystem/enabled', false)===true)
+{
+   $plugins = $app['gcfg']->getPath('pluginsystem/load', array());
+   $pman = new \AnySrc\MarkdownBlog\PluginManager($plugins, 'Frontend');
+   $pman->register($app);
+}
 
 
 

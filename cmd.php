@@ -64,7 +64,7 @@ $collection->loadByRegexGlob(new AnySrc\RecursiveRegexGlob(__DIR__."/post", '/.+
 
 
 //--> TAN for login
-$app->get('/newtan', function() use($tan, $cfg)
+$app->get('newtan', function() use($tan, $cfg)
 {
    $tstr = $tan->newLoginTan();
    Stdout::writel("New Tan: [highlight]".$tstr."[/highlight]");
@@ -74,7 +74,7 @@ $app->get('/newtan', function() use($tan, $cfg)
 
 
 //--> Clear all sessions
-$app->get('/cleartokens', function() use($tan)
+$app->get('cleartokens', function() use($tan)
 {
    Stdout::writel("Clear all TANs and open sessions...");
    $tan->clear();
@@ -84,7 +84,7 @@ $app->get('/cleartokens', function() use($tan)
 
 
 //--> List all sessions
-$app->get('/sessions', function() use($tan)
+$app->get('sessions', function() use($tan)
 {
    Stdout::writel("Display unused TANs and current sessions.");
    Stdout::writel("Keys are stored as hash.");
@@ -128,7 +128,7 @@ $app->get('/sessions', function() use($tan)
 
 
 //--> Find posts
-$app->get('/find {pattern}', function($pattern) use($collection)
+$app->get('find/{pattern}', function($pattern) use($collection)
 {
    $properties = array("title", "name", "tags");
    $result = $collection->findPages($properties, $pattern);
@@ -155,7 +155,7 @@ $app->get('/find {pattern}', function($pattern) use($collection)
 
 
 //--> Latest posts
-$app->get('/latest {num}', function($num) use($collection)
+$app->get('latest/{num}', function($num) use($collection)
 {
    $result = $collection->sortDesc('postdate')->getPagesByRange($num)->sortAsc('postdate');
 
@@ -180,7 +180,7 @@ $app->get('/latest {num}', function($num) use($collection)
 ->value('num', 10);
 
 
-$app->get('/latest', function() use($app)
+$app->get('latest', function() use($app)
 {
    $subRequest = Request::create('/latest 10', 'GET');
    return $app->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
@@ -188,7 +188,7 @@ $app->get('/latest', function() use($app)
 
 
 //--> List posts
-$app->get('/list', function() use($collection)
+$app->get('list', function() use($collection)
 {
    Stdout::writel("[head]Found ".$collection->getCount()." page(s):[/head]");
    Stdout::nl();
@@ -208,7 +208,7 @@ $app->get('/list', function() use($collection)
 
 
 //--> Search for page and edit first
-$app->get('/writefind {name}', function($name) use($app, $collection)
+$app->get('writefind/{name}', function($name) use($app, $collection)
 {
    $properties = array("hash", "name", "title", "tags");
    $result = $collection->findPagesFirst($properties, $name);
@@ -230,7 +230,7 @@ $app->get('/writefind {name}', function($name) use($app, $collection)
 
 
 //--> Edit post
-$app->get('/write {name}', function($name) use($collection)
+$app->get('write/{name}', function($name) use($collection)
 {
    $page = $collection->getPageAuto($name);
 
@@ -277,7 +277,7 @@ $app->get('/write {name}', function($name) use($collection)
 ->assert('name', '.*');
 
 
-$app->get('/delete {name}', function($name) use($collection)
+$app->get('delete/{name}', function($name) use($collection)
 {
    $page = $collection->getPageAuto($name);
    if($page instanceof \AnySrc\MarkdownBlog\Page)
@@ -307,7 +307,7 @@ $app->get('/delete {name}', function($name) use($collection)
 ->assert('name', '.*');
 
 
-$app->get('/folders', function() use($app, $collection)
+$app->get('folders', function() use($app, $collection)
 {
    $folders = new AnySrc\RecursiveRegexGlob($collection->getBaseFolder(), null, "/.*/", false, true);
    $folders->sortAsc();
@@ -333,7 +333,7 @@ $app->get('/folders', function() use($app, $collection)
 });
 
 
-$app->get('/set {mode} {file}', function($mode, $file) use($collection)
+$app->get('set/{mode}/{file}', function($mode, $file) use($collection)
 {
    $page = $collection->getPageAuto($file);
    if(is_null($page))
@@ -368,14 +368,14 @@ $app->get('/set {mode} {file}', function($mode, $file) use($collection)
 ->assert('mode', '[^\s]+');
 
 
-$app->get('/upload', function() use ($cfg)
+$app->get('upload', function() use ($cfg)
 {
    Stdout::writel("Upload URL: [highlight]".$cfg->getPath('hostconfig/cmdhost', '/')."session/upload[/highlight]");
    return "";
 });
 
 
-$app->get('/version', function()
+$app->get('version', function()
 {
    Stdout::writel("anysrc mdblog version: [highlight]".AnySrc\MarkdownBlog\Version::getVersion()."[/highlight]");
    return "";
@@ -383,7 +383,7 @@ $app->get('/version', function()
 
 
 //--> Unknown action
-$app->error(function(\Exception $e, $code)
+$app->error(function(\Exception $e, $code) use ($app)
 {
    Stdout::nl();
    if($code==404)
@@ -395,6 +395,7 @@ $app->error(function(\Exception $e, $code)
       Stdout::errl("ERROR: ".$e->getMessage());
    }
 
+   // Core help
    $commands = array(
        array(
            "title" => "Login Session",
@@ -439,6 +440,28 @@ $app->error(function(\Exception $e, $code)
        ),
    );
 
+   // Plugin help
+   if(isset($app['pluginmanager']))
+   {
+      $mgr = $app['pluginmanager'];
+      foreach($mgr->getPluginKeys() as $plugin)
+      {
+         $pi = $mgr->getPluginByName($plugin);
+         if($pi instanceof \AnySrc\MarkdownBlog\BackendPluginBase)
+         {
+            $hitems = $pi->getHelp();
+            if(count($hitems)>0)
+            {
+               $commands[] = array(
+                   "title" => $pi->getDisplayName(),
+                   "commands" => $hitems,
+               );
+            }
+         }
+      }
+   }
+
+   // Print help
    foreach($commands as $section)
    {
       Stdout::nl();
@@ -451,17 +474,21 @@ $app->error(function(\Exception $e, $code)
       }
    }
 
-   /*
-   Stdout::nl();
-   Stdout::writel($e->getTraceAsString());
-   Stdout::nl();
-   */
    return "";
 });
 
 
-//--> Launch silex with cmd args
-$argstr = "/".$args->get_arg_range(0, null, true, " ", true);
-$app->run(Request::create($argstr));
+//--> Load plugins
+if($cfg->getPath('pluginsystem/enabled', false)===true)
+{
+   $plugins = $cfg->getPath('pluginsystem/load', array());
+   $pman = new \AnySrc\MarkdownBlog\PluginManager($plugins, 'Backend');
+   $pman->register($app);
+}
 
+
+//--> Launch silex with cmd args
+$argstr = "/".$args->get_arg_range(0, null, true, "/", true);
+
+$app->run(Request::create($argstr));
 Stdout::nl();

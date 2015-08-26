@@ -43,7 +43,7 @@
          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
             <ul class="nav navbar-nav">
-               {% set folders = listcollection.pagefolders %}
+               {% set folders = app.listcollection.pagefolders %}
                {% for folder in folders|keys|sort %}
                   {% if '/' not in folder and folder!="" %}
                      <li>{{macro.postpathlink(folders[folder])}}</li>
@@ -82,16 +82,16 @@
                <div class="content">
                {% block content %}
                   <article>
-                     <h1>{{page.getProp('title')}}</h1>
+                     <h1>Headline</h1>
 
                      <p>
-                        <span class="glyphicon glyphicon-time"></span> Beitrag vom {{page.postdate|date('d.m.Y')}}
-                        in {{page.namefolder}}
+                        <span class="glyphicon glyphicon-time"></span> Beitrag vom {{'now'|date('d.m.Y')}}
+                        in ~/
                      </p>
 
                      <hr>
 
-                     {{content|raw}}
+                     <p>Hello World!</p>
                   </article>
                {% endblock %}
                </div>
@@ -99,7 +99,7 @@
                <div class="row tags">
                   <div class="col-md-12">
                      <hr>
-                     {% for item in listcollection.tagcloud %}
+                     {% for item in app.listcollection.tagcloud %}
                         <div class="pull-left spacer-5">{{macro.tagtag(item)}}</div>
                      {% endfor %}
                   </div>
@@ -128,7 +128,7 @@
                      <h4>Ordner</h4>
                      <div class="row">
                        <div class="col-md-12">
-                           {% set folders = listcollection.pagefolders %}
+                           {% set folders = app.listcollection.pagefolders %}
                            {% for folder in folders|keys|sort %}
                               <div class="pull-left spacer-5">{{macro.foldertag(folders[folder])}}</div>
                            {% endfor %}
@@ -139,13 +139,13 @@
                      <h4>Status</h4>
                      <div class="row">
                         <div class="col-md-12">
-                           {% if listcollection.hasDisabledPages %}
+                           {% if app.listcollection.hasDisabledPages %}
                               <div class="pull-left spacer-5">{{macro.statustag('disabled', 'Dieser Beitrag ist deaktiviert', 'Deaktiviert', 'lock')}}</div>
                            {% endif %}
-                           {% if listcollection.hasInvisiblePages %}
+                           {% if app.listcollection.hasInvisiblePages %}
                               <div class="pull-left spacer-5">{{macro.statustag('hidden', 'Dieser Beitrag wird nicht gelistet', 'Unsichtbar', 'eye-slash')}}</div>
                            {% endif %}
-                           {% if listcollection.hasInvalidPages %}
+                           {% if app.listcollection.hasInvalidPages %}
                               <div class="pull-left spacer-5">{{macro.statustag('invalid', 'Dieser Beitrag enthält Syntax Fehler', 'Syntax Fehler', 'exclamation-triangle')}}</div>
                            {% endif %}
                         </div>

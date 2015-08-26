@@ -16,7 +16,10 @@
     },
     "autoload": {
         "psr-0": {
-            "AnySrc": "lib/"
+            "AnySrc\\": "lib/"
+        },
+        "psr-4": {
+            "AnySrc\\MarkdownBlog\\Plugin\\": "plugin/"
         }
     }
 }

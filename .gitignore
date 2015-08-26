@@ -9,3 +9,5 @@ upload/*
 composer.lock
 vendor/
 nbproject/private
+plugin/*
+!plugin/readme.txt
