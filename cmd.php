@@ -182,7 +182,7 @@ $app->get('latest/{num}', function($num) use($collection)
 
 $app->get('latest', function() use($app)
 {
-   $subRequest = Request::create('/latest 10', 'GET');
+   $subRequest = Request::create('/latest/10', 'GET');
    return $app->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
 });
 
@@ -216,7 +216,7 @@ $app->get('writefind/{name}', function($name) use($app, $collection)
    if($result instanceof \AnySrc\MarkdownBlog\Page)
    {
       // Open editor
-      $subRequest = Request::create('/write '.$result->getHash(), 'GET');
+      $subRequest = Request::create('/write/'.$result->getHash(), 'GET');
       return $app->handle($subRequest, \Symfony\Component\HttpKernel\HttpKernelInterface::SUB_REQUEST);
    }
    else
@@ -388,7 +388,7 @@ $app->error(function(\Exception $e, $code) use ($app)
    Stdout::nl();
    if($code==404)
    {
-      Stdout::errl("Option not found.");
+      Stdout::errl("Option not found. ".$e->getMessage());
    }
    else
    {
@@ -488,7 +488,8 @@ if($cfg->getPath('pluginsystem/enabled', false)===true)
 
 
 //--> Launch silex with cmd args
-$argstr = "/".$args->get_arg_range(0, null, true, "/", true);
+$argstr = "/".$args->get_arg_range(0, null, true, "/", false, true);
+var_dump($argstr);
 
 $app->run(Request::create($argstr));
 Stdout::nl();

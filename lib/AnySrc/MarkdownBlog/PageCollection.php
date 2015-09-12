@@ -36,7 +36,7 @@ class PageCollection implements \Iterator
    private $pages;
 
 
-   function __construct(\AnySrc\MyApplication $app, $basefolder=null)
+   function __construct(\AnySrc\MyApplication $app=null, $basefolder=null)
    {
       $this->rewind();
       $this->pages = array();
@@ -104,6 +104,11 @@ class PageCollection implements \Iterator
     */
    public function getApp()
    {
+      if(!($this->app instanceof \AnySrc\MyApplication))
+      {
+         throw new UnsupportedException("No MyApplication instance found");
+      }
+
       return $this->app;
    }
 
@@ -114,7 +119,8 @@ class PageCollection implements \Iterator
     */
    public function getCfg()
    {
-      return $this->app['gcfg'];
+      $tapp = $this->getApp();
+      return $tapp['gcfg'];
    }
 
 
@@ -181,7 +187,7 @@ class PageCollection implements \Iterator
 
    public function cloneCollection()
    {
-      $c = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $c = new PageCollection($this->app, $this->getBaseFolder());
       $c->importPages($this->toArray());
       return $c;
    }
@@ -408,7 +414,7 @@ class PageCollection implements \Iterator
          $j++;
       }
 
-      $c = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $c = new PageCollection($this->app, $this->getBaseFolder());
       $c->importPages($result);
 
       return $c;
@@ -456,7 +462,7 @@ class PageCollection implements \Iterator
          }
       }
 
-      $c = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $c = new PageCollection($this->app, $this->getBaseFolder());
       $c->importPages($result);
 
       return $c;
@@ -484,7 +490,7 @@ class PageCollection implements \Iterator
          }
       }
 
-      $c = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $c = new PageCollection($this->app, $this->getBaseFolder());
       $c->importPages($result);
 
       return $c;
@@ -684,7 +690,7 @@ class PageCollection implements \Iterator
          }
       }
 
-      $collection = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $collection = new PageCollection($this->app, $this->getBaseFolder());
       $collection->importPages($result);
       return $collection;
    }
@@ -719,7 +725,7 @@ class PageCollection implements \Iterator
       $rgx = '/^'.preg_quote($folder, '/').'/';
       $collection = $this->getPagesByProperty("namefolder", $rgx, true);
 
-      $result = new PageCollection($this->getApp(), $this->getBaseFolder());
+      $result = new PageCollection($this->app, $this->getBaseFolder());
       foreach($collection as $page)
       {
          if($ignorehiddeninparent===true || !($page->getNameFolder()!=$folder && $page->getIsFolderHiddenInParent()))

@@ -5,6 +5,7 @@ class Stdout
 {
 
    const NL = "\n";
+   const MAXLINELENGTH=80;
 
    public static $rows;
    public static $cols;
@@ -17,7 +18,7 @@ class Stdout
    public static function writel($text, $bbcode=true)
    {
       self::write($text, $bbcode);
-      echo "\n";
+      self::nl();
    }
 
    public static function write($text, $bbcode=true)

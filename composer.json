@@ -12,7 +12,8 @@
         "symfony/twig-bridge": "~2.6",
         "perryflynn/parsedown-extra-extensions": "~0.0",
         "symfony/yaml": "~2.6",
-        "abeautifulsite/simpleimage": "^2.5"
+        "abeautifulsite/simpleimage": "^2.5",
+        "symfony/console": "^2.7"
     },
     "autoload": {
         "psr-0": {

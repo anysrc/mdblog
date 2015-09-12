@@ -13,6 +13,11 @@ class Version
     */
    public static function getVersion()
    {
+      if(!defined('DIR_ABSOLUTEBASE'))
+      {
+         throw new \Exception('DIR_ABSOLUTEBASE constant not defined');
+      }
+
       if(self::$version===null && is_file(DIR_ABSOLUTEBASE."version.properties"))
       {
          $content = file_get_contents(DIR_ABSOLUTEBASE."version.properties");

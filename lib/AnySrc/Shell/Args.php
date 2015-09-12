@@ -122,12 +122,13 @@ class Args
       return $this->args;
    }
 
-   public function get_arg_range($start, $end=null, $implode=false, $glue=" ", $strtolower=false) {
+   public function get_arg_range($start, $end=null, $implode=false, $glue=" ", $strtolower=false, $urlencode=false) {
       if($end===null) $end=count($this->args)-1;
       if($this->get_arg($start)!==false && $this->get_arg($end)!==false && $start<=$end) {
          $range = array();
          for($i=$start; $i<=$end; $i++) $range[] = $this->get_arg($i);
          if($strtolower===true) for($i=0; $i<count($range); $i++) $range[$i]=strtolower($range[$i]);
+         if($urlencode===true) for($i=0; $i<count($range); $i++) $range[$i]=urlencode($range[$i]);
          if($implode===true) $range = implode($glue, $range);
          return $range;
       } else {

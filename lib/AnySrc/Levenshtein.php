@@ -9,7 +9,7 @@ class Levenshtein
 {
 
    const MAXLENGTH=255;
-   const SPLITRGX="/[\s,\._\-]+/";
+   const SPLITRGX="/[\s,\._\-\/]+/";
 
 
    /**
@@ -38,6 +38,11 @@ class Levenshtein
       $results = array();
       foreach($patternlist as $patternitem)
       {
+         if(empty($patternitem))
+         {
+            continue;
+         }
+
          if(strlen($patternitem)>self::MAXLENGTH)
          {
             $patternitem=substr($patternitem, 0, self::MAXLENGTH);
@@ -106,8 +111,18 @@ class Levenshtein
     * @param int $smalladdition
     * @return float
     */
-   public static function compareTextMultiple(array $comparisons, $smallword=3, $smalladdition=2)
+   public static function compareTextMultiple(array $comparisons, $smallword=3, $smalladdition=2, $min=false)
    {
+      if($smallword===null)
+      {
+         $smallword=3;
+      }
+
+      if($smalladdition===null)
+      {
+         $smalladdition=2;
+      }
+
       $results = array();
       foreach($comparisons as $cmp)
       {
@@ -124,6 +139,11 @@ class Levenshtein
       }
 
       $score = (array_sum($results)/count($results));
+      if($min===true)
+      {
+         $score = min($results);
+      }
+
       return $score;
    }
 
