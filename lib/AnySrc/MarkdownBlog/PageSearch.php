@@ -113,7 +113,6 @@ class PageSearch
       //--> Pages by state
       if(count($states)>0)
       {
-         $temp=null;
          foreach($states as $state)
          {
             if(!isset($stateprops[$state]))
@@ -121,16 +120,8 @@ class PageSearch
                continue;
             }
 
-            if($temp===null)
-            {
-               $temp = $filteredcollection->getPagesByProperty($stateprops[$state][0], $stateprops[$state][1]);
-            }
-            else
-            {
-               $temp->importPages($filteredcollection->getPagesByProperty($stateprops[$state][0], $stateprops[$state][1])->toArray());
-            }
+            $filteredcollection = $filteredcollection->getPagesByProperty($stateprops[$state][0], $stateprops[$state][1]);
          }
-         $filteredcollection = $temp;
       }
 
       //--> Pages by Tags

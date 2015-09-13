@@ -575,6 +575,10 @@ class PageCollection implements \Iterator
     */
    public function getPageByName($name)
    {
+      if(strpos($name, '~/')===0 || strpos($name, '//')===0)
+      {
+         $name = substr($name, 2);
+      }
       return $this->getFirstPageByProperty("name", $name);
    }
 

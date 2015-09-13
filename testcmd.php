@@ -168,11 +168,216 @@ $app->register('pages')->setCode(function(II $ii, OI $oi) use($collection)
    }
 
    $oi->writeln();
+   if($collection->getFirstPage()->getIsPropExists('searchscore'))
+   {
+      $oi->title('Score: ');
+      $oi->writeln('search score, lower = better');
+   }
+
    $oi->writeln("Flags: <ce>-d-</ce>isabled, <ce>-h-</ce>idden, <ce>-p-</ce>rivate category");
 })
 ->setDescription('List or find pages')
 ->addOption('top', 't', InputOption::VALUE_OPTIONAL, 'Number of listed pages')
 ->addOption('search', 's', InputOption::VALUE_OPTIONAL, 'Search pattern');
+
+
+//--> Write / Writefind
+$app->register('write')->setCode(function(II $ii, OI $oi) use($collection)
+{
+   $name = $ii->getArgument('name');
+   $ff = $ii->getOption('findfirst');
+   $page = null;
+
+   if($ff)
+   {
+      $queryparser = new \AnySrc\SearchPropertyParser($name);
+      $search = new \AnySrc\MarkdownBlog\PageSearch($collection);
+      $collection = $search->search($queryparser, 5, true);
+      $collection->sort(array(array('property'=>'searchscore', 'direction'=>'ASC')));
+      $page = $collection->getFirstPage();
+   }
+   else
+   {
+      $page = $collection->getPageAuto($name);
+   }
+
+   if($page===null && $ff===false && strpos($name, "::")!==0)
+   {
+      $choice = Stdout::readprompt("Page not found. Create? (y/n)");
+      if($choice=="y")
+      {
+         $page = $collection->createPage($name);
+      }
+      else
+      {
+         $oi->errln('Aborted.');
+         return;
+      }
+   }
+   elseif($page===null)
+   {
+      $oi->errln('Page not found.');
+      return;
+   }
+
+   $oi->write('Edit ');
+   $oi->pageln($page);
+
+   $editor = System::getFirstAvailableCommand(array(System::getEnv("EDITOR"), "nano", "vim", "vi"));
+   if($editor===null)
+   {
+      $oi->errln("No compatible editor found.");
+      $oi->errln("Please set \$EDITOR environment variable.");
+      return;
+   }
+
+   $oi->writeln("Using <ch>".$editor."</ch> as editor");
+   $oi->writeln("Launch...");
+   sleep(1);
+
+   System::ttyenvexec($editor, $page->getAbsoluteFilename());
+
+   $oi->writeln("Done editing ");
+   $oi->pageln($page);
+})
+->setDescription('Edit or create a page')
+->addOption('findfirst', 'f', InputOption::VALUE_NONE, 'If set, find the best matching post and start editing')
+->addArgument('name', InputArgument::REQUIRED, 'Filename, searchpattern, hashcode');
+
+
+//--> Delete page
+$app->register('delete')->setCode(function(II $ii, OI $oi) use($collection)
+{
+   $name = $ii->getArgument('name');
+   $page = $collection->getPageAuto($name);
+
+   if($page instanceof \AnySrc\MarkdownBlog\Page)
+   {
+      $oi->write("Page found: ");
+      $oi->pageln($page);
+      $oi->writeln();
+
+      $choice = Stdout::readprompt("Really delete? (y/n)");
+      if($choice=="y")
+      {
+         $page->delete();
+         $oi->writeln("Page deleted.");
+      }
+      else
+      {
+         $oi->errln("Aborted.");
+      }
+   }
+   else
+   {
+      $oi->errln("No page found.");
+   }
+})
+->setDescription('Delete a page')
+->addArgument('name', InputArgument::REQUIRED, 'Filename or hashcode');
+
+
+//--> Folders
+$app->register('folders')->setCode(function(II $ii, OI $oi) use($collection)
+{
+   $folders = new AnySrc\RecursiveRegexGlob($collection->getBaseFolder(), null, "/.*/", false, true);
+   $folders->sortAsc();
+
+   $oi->titleln($folders->count()." folder".($folders->count()==1 ? "" : "s")." found.");
+   $oi->writeln();
+
+   foreach($folders as $folder)
+   {
+      $mdfolder = substr($folder, strlen($collection->getBaseFolder()));
+      $oi->file("~/".$mdfolder." ");
+      $oi->write($collection->getFolderPages($mdfolder)->getCount()." pages inside");
+      if(is_file($folder.DIRECTORY_SEPARATOR."folder.yml"))
+      {
+         $oi->writeln(", folder.yml");
+      }
+      else
+      {
+         $oi->writeln();
+      }
+   }
+})
+->setDescription('List all folders');
+
+
+//--> State changes
+$app->register('changestate')->setCode(function(II $ii, OI $oi) use($collection)
+{
+   $pages = $ii->getArgument('pages');
+   $enabled = ($ii->getOption('enable') ? true : ($ii->getOption('disable') ? false : null));
+   $visible = ($ii->getOption('show') ? true : ($ii->getOption('hide') ? false : null));
+
+   if($enabled!==null)
+   {
+      $oi->writeln('Change state to <ch>'.($enabled===true ? 'enabled' : 'disabled').'</ch>');
+   }
+
+   if($visible!==null)
+   {
+      $oi->writeln('Change visibility to <ch>'.($visible===true ? 'visible' : 'hidden').'</ch>');
+   }
+
+   if($enabled===null && $visible===null)
+   {
+      $oi->errln('Please specify changes flags.');
+      return;
+   }
+
+   $oi->writeln();
+
+   foreach($pages as $pagename)
+   {
+      $page = $collection->getPageAuto($pagename);
+      if($page instanceof \AnySrc\MarkdownBlog\Page)
+      {
+         if($enabled!==null)
+         {
+            $page->setIsDisabled(($enabled===false));
+         }
+         if($visible!==null)
+         {
+            $page->setIsVisible(($visible===true));
+         }
+         $page->write();
+         $oi->pageln($page);
+      }
+      else
+      {
+         $oi->err('Page not found: ');
+         $oi->writeln($pagename);
+      }
+   }
+
+   $oi->writeln();
+   $oi->writeln('Done!');
+})
+->setDescription('Change page states')
+->addArgument('pages', InputArgument::IS_ARRAY, 'List of filenames or hashes')
+->addOption('enable', null, InputOption::VALUE_NONE, 'Enable the pages')
+->addOption('disable', null, InputOption::VALUE_NONE, 'Disable the pages')
+->addOption('hide', null, InputOption::VALUE_NONE, 'Hide pages in lists')
+->addOption('show', null, InputOption::VALUE_NONE, 'Show pages in lists');
+
+
+//--> Upload URL
+$app->register('upload')->setCode(function(II $ii, OI $oi) use($cfg)
+{
+   $oi->writeln("Upload URL: <ch>".$cfg->getPath('hostconfig/cmdhost', '/')."session/upload</ch>");
+})
+->setDescription('Print the upload URL');
+
+
+//--> Load plugins
+if($cfg->getPath('pluginsystem/enabled', false)===true)
+{
+   $plugins = $cfg->getPath('pluginsystem/load', array());
+   $pman = new \AnySrc\MarkdownBlog\PluginManager($plugins, 'Backend');
+   $pman->register($app);
+}
 
 
 //--> Run application

@@ -5,18 +5,32 @@ namespace AnySrc\MarkdownBlog;
 abstract class BackendPluginBase extends \AnySrc\MarkdownBlog\PluginBase
 {
 
-   public function getHelp()
+   /**
+    * @var \Symfony\Component\Console\Application
+    */
+   private $app;
+
+   public function getPrefix()
    {
-      return array();
+      return $this->getPluginKey().":";
    }
 
-
-   public function getRoutePrefix()
+   public function register(\Symfony\Component\Console\Application $app)
    {
-      return "/".$this->getPluginKey()."/";
+      $this->app = $app;
+      $this->registerCommands();
    }
 
+   /**
+    *
+    * @param string $name
+    * @return \Symfony\Component\Console\Command\Command
+    */
+   public function createCommand($name)
+   {
+      return $this->app->register($this->getPrefix().$name);
+   }
 
-   abstract public function getDisplayName();
+   abstract public function registerCommands();
 
 }

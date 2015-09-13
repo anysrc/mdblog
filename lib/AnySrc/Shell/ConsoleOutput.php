@@ -39,9 +39,13 @@ class ConsoleOutput extends \Symfony\Component\Console\Output\ConsoleOutput
       $flags[] = $page->getIsVisible() ? "-" : "<ce>h</ce>";
       $flags[] = $page->getIsInPrivateFolder() ? "<ce>p</ce>" : "-";
 
-      $this->write("<ch>[ ::".$page->getHash()." ]</ch> ".
-         implode("", $flags)." ".
-         $page->getTitle()." <cf>~/".$page->getName()."</cf>");
+      $this->write("<ch>[ ::".$page->getHash()." ]</ch> ");
+      if($page->getIsPropExists('searchscore'))
+      {
+         $this->write('<ct>[ Score: '.$page->getIsPropExists('searchscore').' ]</ct> ');
+      }
+      $this->write(implode("", $flags)." ");
+      $this->write($page->getTitle()." <cf>~/".$page->getName()."</cf>");
    }
 
    public function pageln(\AnySrc\MarkdownBlog\Page $page)

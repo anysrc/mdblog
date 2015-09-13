@@ -489,7 +489,6 @@ if($cfg->getPath('pluginsystem/enabled', false)===true)
 
 //--> Launch silex with cmd args
 $argstr = "/".$args->get_arg_range(0, null, true, "/", false, true);
-var_dump($argstr);
 
 $app->run(Request::create($argstr));
 Stdout::nl();

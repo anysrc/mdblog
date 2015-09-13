@@ -59,14 +59,12 @@ class PluginManager
    }
 
 
-   public function register(\AnySrc\MyApplication $app)
+   public function register($app)
    {
       foreach($this->plugins as $plugin)
       {
          $plugin->register($app);
       }
-
-      $app['pluginmanager'] = $this;
    }
 
 

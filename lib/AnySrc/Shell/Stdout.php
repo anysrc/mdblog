@@ -46,22 +46,4 @@ class Stdout
       return System::readLine();
    }
 
-   public static function pagename(\AnySrc\MarkdownBlog\Page $page)
-   {
-      $flags = array();
-      $flags[] = $page->getIsDisabled() ? "[error]d[/error]" : "-";
-      $flags[] = $page->getIsVisible() ? "-" : "[error]h[/error]";
-      $flags[] = $page->getIsInPrivateFolder() ? "[error]p[/error]" : "-";
-
-      Stdout::write("[highlight][ ::".$page->getHash()." ][/highlight] ".
-         implode("", $flags)." ".
-         $page->getTitle()." [file]~/".$page->getName()."[/file]");
-   }
-
-   public static function pagenamel(\AnySrc\MarkdownBlog\Page $page)
-   {
-      self::pagename($page);
-      self::nl();
-   }
-
 }
