@@ -124,6 +124,8 @@ class Tan extends \AnySrc\YamlFile
       $data = $this->load();
       foreach(array("tans", "sessions") as $what)
       {
+         if(!isset($data[$what])) continue;
+
          foreach($data[$what] as $key => $tan)
          {
             if(strtotime($tan['timeout'])<time())

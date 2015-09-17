@@ -71,6 +71,10 @@ cp post/folder.yml.skel "$TARGETFOLDER/post/folder.yml"
 echo "Create upload folder..."
 mkdir "$TARGETFOLDER/upload"
 
+# Plugin
+echo "Create plugin folder..."
+mkdir "$TARGETFOLDER/plugin"
+
 # Create archive
 echo "Create Archive..."
 cd "$TARGETFOLDER"
