@@ -2,6 +2,9 @@
 
 namespace AnySrc;
 
+/**
+ * Translate foo/bar to $array['foo']['bar']
+ */
 class ArrayPath
 {
 

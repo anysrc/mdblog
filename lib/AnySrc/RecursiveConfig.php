@@ -3,6 +3,9 @@
 namespace AnySrc;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Scan reverse recursive inside a subsolder for yaml configs and merge them
+ */
 class RecursiveConfig
 {
 

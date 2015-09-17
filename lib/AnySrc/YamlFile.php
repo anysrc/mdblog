@@ -3,6 +3,9 @@
 namespace AnySrc;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * YAML Parser implementation
+ */
 abstract class YamlFile
 {
 

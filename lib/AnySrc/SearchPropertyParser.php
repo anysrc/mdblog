@@ -2,6 +2,9 @@
 
 namespace AnySrc;
 
+/**
+ * Parse a search string for properties
+ */
 class SearchPropertyParser
 {
 

@@ -2,6 +2,9 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * Search inside various properties for pages
+ */
 class PageSearch
 {
 

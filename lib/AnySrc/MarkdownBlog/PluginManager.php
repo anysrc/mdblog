@@ -2,13 +2,30 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * The plugin manager
+ */
 class PluginManager
 {
 
+   /**
+    * Plugin base class
+    */
    const PLUGINBASE = '\AnySrc\MarkdownBlog\PluginBase';
 
+   /**
+    * All plugin instances
+    * @var array
+    */
    protected $plugins;
 
+
+   /**
+    * Initialize the plugin manager instance
+    * @param string[] $plugins Array of all plugin keys
+    * @param string $type "Frontend" or "Backend"
+    * @throws \Exception
+    */
    public function __construct(array $plugins, $type='Frontend')
    {
       if(count($plugins)<1)
@@ -43,12 +60,22 @@ class PluginManager
    }
 
 
+   /**
+    * Array of all plugin keys
+    * @return string[]
+    */
    public function getPluginKeys()
    {
       return array_keys($this->plugins);
    }
 
 
+   /**
+    * Get plugin by key name
+    * @param string $name
+    * @return \AnySrc\MarkdownBlog\PluginBase
+    * @throws \Exception
+    */
    public function getPluginByName($name)
    {
       if(isset($this->plugins[$name]))
@@ -59,6 +86,10 @@ class PluginManager
    }
 
 
+   /**
+    * Register the plugins
+    * @param object $app The symfony console or silex application
+    */
    public function register($app)
    {
       foreach($this->plugins as $plugin)

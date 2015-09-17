@@ -2,6 +2,9 @@
 
 namespace AnySrc\Shell;
 
+/**
+ * Helper class for operating system specific stuff
+ */
 class System
 {
 
@@ -100,6 +103,10 @@ class System
    }
 
 
+   /**
+    * Read one line from keyboard
+    * @return string
+    */
    public static function readLine()
    {
       $fh = fopen('php://stdin','r') or die($php_errormsg);

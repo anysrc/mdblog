@@ -2,6 +2,9 @@
 
 namespace AnySrc;
 
+/**
+ * Extensions for twig parser
+ */
 class TwigExtensions extends \Twig_Extension
 {
 

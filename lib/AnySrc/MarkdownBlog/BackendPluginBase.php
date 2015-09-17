@@ -2,6 +2,9 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * Base for a backend extension
+ */
 abstract class BackendPluginBase extends \AnySrc\MarkdownBlog\PluginBase
 {
 
@@ -10,11 +13,19 @@ abstract class BackendPluginBase extends \AnySrc\MarkdownBlog\PluginBase
     */
    private $app;
 
+   /**
+    * Praefix for a command
+    * @return string
+    */
    public function getPrefix()
    {
       return $this->getPluginKey().":";
    }
 
+   /**
+    * Register this plugin in cmd
+    * @param \Symfony\Component\Console\Application $app
+    */
    public function register(\Symfony\Component\Console\Application $app)
    {
       $this->app = $app;
@@ -31,6 +42,9 @@ abstract class BackendPluginBase extends \AnySrc\MarkdownBlog\PluginBase
       return $this->app->register($this->getPrefix().$name);
    }
 
+   /**
+    * Create the plugin commands
+    */
    abstract public function registerCommands();
 
 }

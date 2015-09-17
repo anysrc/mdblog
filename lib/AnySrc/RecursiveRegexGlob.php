@@ -2,6 +2,9 @@
 
 namespace AnySrc;
 
+/**
+ * Search for files by regex
+ */
 class RecursiveRegexGlob implements \Iterator
 {
 
@@ -10,7 +13,7 @@ class RecursiveRegexGlob implements \Iterator
    private $directoryrgx;
    private $list;
    private $position;
-   
+
    private $searchfiles;
    private $searchdirs;
 
@@ -50,17 +53,17 @@ class RecursiveRegexGlob implements \Iterator
          }
       }
    }
-   
+
    public function count()
    {
       return count($this->list);
    }
-   
+
    public function sortAsc()
    {
       sort($this->list);
    }
-   
+
    public function sortDesc()
    {
       rsort($this->list);

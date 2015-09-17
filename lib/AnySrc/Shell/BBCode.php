@@ -2,9 +2,19 @@
 
 namespace AnySrc\Shell;
 
-class BbCode {
+/**
+ * BBCode for console output
+ */
+class BbCode
+{
 
-   public static function parse($text) {
+   /**
+    * Parse the bbcodes and return console color codes
+    * @param string $text
+    * @return string
+    */
+   public static function parse($text)
+   {
       $tags = self::get_available_tags();
 
       foreach($tags as $tag) {
@@ -24,7 +34,8 @@ class BbCode {
    }
 
 
-   private static function get_available_tags() {
+   protected static function get_available_tags()
+   {
       $tags = array();
       $methods = get_class_methods("\\AnySrc\\Shell\\BbCode");
       foreach($methods as $method) {
@@ -38,7 +49,8 @@ class BbCode {
    }
 
 
-   private static function get_arguments($text) {
+   protected static function get_arguments($text)
+   {
       $args = array();
 
       $argslist = explode(" ", $text);
@@ -59,17 +71,20 @@ class BbCode {
    }
 
 
-   private static function tag_b($arguments, $text) {
+   protected static function tag_b($arguments, $text)
+   {
       return Color::bold($text);
    }
 
 
-   private static function tag_u($arguments, $text) {
+   protected static function tag_u($arguments, $text)
+   {
       return Color::underline($text);
    }
 
 
-   private static function tag_color($arguments, $text) {
+   protected static function tag_color($arguments, $text)
+   {
       $available_colors = Color::getColorList();
       $color="black";
       $style = "normal";
@@ -87,27 +102,27 @@ class BbCode {
       return Color::$style($text, $color, $bgcolor);
    }
 
-   private static function tag_head($arguments, $text)
+   protected static function tag_head($arguments, $text)
    {
       return Color::normal($text, "green");
    }
 
-   private static function tag_error($arguments, $text)
+   protected static function tag_error($arguments, $text)
    {
       return Color::normal($text, "red");
    }
 
-   private static function tag_highlight($arguments, $text)
+   protected static function tag_highlight($arguments, $text)
    {
       return Color::normal($text, "yellow");
    }
 
-   private static function tag_file($arguments, $text)
+   protected static function tag_file($arguments, $text)
    {
       return Color::normal($text, "purple");
    }
 
-   private static function tag_cmd($arguments, $text)
+   protected static function tag_cmd($arguments, $text)
    {
       return Color::normal($text, "cyan");
    }

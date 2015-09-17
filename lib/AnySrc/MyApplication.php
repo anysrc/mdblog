@@ -2,6 +2,9 @@
 
 namespace AnySrc;
 
+/**
+ * Silex application with traits
+ */
 class MyApplication  extends \Silex\Application
 {
 

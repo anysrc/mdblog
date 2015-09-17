@@ -2,6 +2,9 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * Read version code from properties file
+ */
 class Version
 {
 

@@ -2,6 +2,9 @@
 
 namespace AnySrc\Security;
 
+/**
+ * TAN system for login
+ */
 class Tan extends \AnySrc\YamlFile
 {
 

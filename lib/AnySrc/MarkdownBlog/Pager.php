@@ -2,6 +2,9 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * Initialize paging for a list view
+ */
 class Pager
 {
 
@@ -55,7 +58,7 @@ class Pager
       return $pagemax;
    }
 
-   
+
    /**
     * Get collection with pages of current page
     * @param \AnySrc\MarkdownBlog\PageCollection $collection

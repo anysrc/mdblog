@@ -3,6 +3,9 @@
 namespace AnySrc\MarkdownBlog;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * Global yaml configuration
+ */
 class GlobalConfig
 {
 

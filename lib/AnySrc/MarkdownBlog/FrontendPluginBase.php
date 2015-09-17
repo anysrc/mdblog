@@ -2,6 +2,9 @@
 
 namespace AnySrc\MarkdownBlog;
 
+/**
+ * Base for frontend extension
+ */
 abstract class FrontendPluginBase extends \AnySrc\MarkdownBlog\PluginBase implements \Silex\ControllerProviderInterface
 {
 
@@ -11,12 +14,21 @@ abstract class FrontendPluginBase extends \AnySrc\MarkdownBlog\PluginBase implem
    private $app;
 
 
+   /**
+    * Prefix for a symfony route
+    * @return string
+    */
    public function getPrefix()
    {
       return "/plugin/".$this->getPluginKey()."/";
    }
 
 
+   /**
+    * Connect this plugin to silex application
+    * @param \Silex\Application $app
+    * @return \Silex\ControllerCollection
+    */
    public function connect(\Silex\Application $app)
    {
       $this->app = $app;
@@ -34,18 +46,30 @@ abstract class FrontendPluginBase extends \AnySrc\MarkdownBlog\PluginBase implem
    }
 
 
+   /**
+    * Get the silex app
+    * @return \Silex\Application
+    */
    protected function getApp()
    {
       return $this->app;
    }
 
 
+   /**
+    * Register this plugin to silex application
+    * @param \AnySrc\MyApplication $app
+    */
    public function register(\AnySrc\MyApplication $app)
    {
       $app->mount($this->getPrefix(), $this);
    }
 
 
+   /**
+    * Define the plugin routes
+    * @param \Silex\ControllerCollection $collection
+    */
    public function registerRoutes(\Silex\ControllerCollection $collection)
    {
    }

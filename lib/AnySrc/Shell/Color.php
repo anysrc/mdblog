@@ -1,6 +1,9 @@
 <?php
 namespace AnySrc\Shell;
 
+/**
+ * Console colors
+ */
 class Color
 {
 
